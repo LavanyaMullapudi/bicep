@@ -13,7 +13,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
 
 var webAppNames = [for (site in resources('Microsoft.Web/sites', resourceGroupName)) : {
   name: site.name
-}]
+}];
 
 resource monitorAlertsCpu 'Microsoft.Insights/metricAlerts@2020-08-01-preview' = {
   name: '${webAppName.name}-cpu-alert'
