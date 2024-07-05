@@ -4,7 +4,7 @@ param logAnalyticsWorkspaceId '1d5c322a-f894-4c3d-bb61-1ff5d54ea0f0'
 param emailAddress 'sumanth.gurram@genzeon.com'
 //targetScope = 'subscription'
 
-resource actionGroup 'Microsoft.Insights/actionGroups@2020-04-01' = {
+resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   name: actionGroupName
   location: resourceGroup().location
   properties: {
@@ -18,12 +18,17 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2020-04-01' = {
     ]
   }
 }
-
-resource webApps array = [
-  for (webAppName in listWebAppNames(resourceGroupName)) {
+var webAppNames = listWebAppNames(resourceGroupName)
+var webApps = [
+  for (webAppName in webAppNames) {
     name: webAppName
   }
 ]
+// resource webApps array = [
+//  for (webAppName in listWebAppNames(resourceGroupName)) {
+//    name: webAppName
+//  }
+// ]
 
 resource monitorAlertsCpu array = [
   for (webApp in webApps) {
