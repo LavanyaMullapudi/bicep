@@ -12,15 +12,14 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
     severity: 3
     enabled: true
     criteria: {
-       odata.type: 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      odata.type: 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
           metricName: 'CpuPercentage'
-          metricNamespace: 'Microsoft.Web/sites'
+          dimensions: []
           operator: 'GreaterThan'
           threshold: 70
           timeAggregation: 'Average'
-          dimensions: []
         }
       ]
     }
