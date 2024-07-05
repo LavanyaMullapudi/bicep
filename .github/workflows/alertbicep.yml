@@ -3,7 +3,7 @@ name: Deploy Monitoring and Alerts.
 on:
   push:
     branches:
-      - alerts
+      - main
 
 jobs:
   deploy:
@@ -34,6 +34,6 @@ jobs:
         run: |
           az deployment group create \
             --resource-group acr-app-rg \
-            --template-file alerts.bicep \
+            --template-file webappalerts.bicep \
             --parameters resourceGroupName=acr-app-rg
 
