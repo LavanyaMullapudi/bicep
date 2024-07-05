@@ -14,6 +14,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     // Add other receivers as needed
   }
 }
+
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: '${appServiceName}-HighCPUAlert'
   location: 'Global'
@@ -22,7 +23,7 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
     severity: 3
     enabled: true
     criteria: {
-     'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
           metricName: 'CpuPercentage'
@@ -34,7 +35,10 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
       ]
     }
     actions: [
-        actionGroup.id
+      {
+        actionGroupId: actionGroup.id
+        webhookProperties: {}
+      }
     ]
   }
 }
