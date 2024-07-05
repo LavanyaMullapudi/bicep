@@ -4,6 +4,15 @@ param appServiceName string
 
 var scope = '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Web/sites/${appServiceName}'
 
+resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
+  name: actionGroupName
+  location: resourceGroup().location
+  properties: {
+    groupShortName: 'actiongroup'
+    emailReceivers: []
+    // Add other receivers as needed
+  }
+}
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: 'HighCPUAlert'
   location: 'Global'
@@ -12,7 +21,7 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
     severity: 3
     enabled: true
     criteria: {
-      odata.type: 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+     'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
           metricName: 'CpuPercentage'
@@ -23,7 +32,9 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
         }
       ]
     }
-    actions: []
+    actions: [
+       actionGroupId: actionGroup.id
+    ]
   }
 }
 
