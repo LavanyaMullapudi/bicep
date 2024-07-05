@@ -34,9 +34,7 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
       ]
     }
     actions: [
-       {
-        actionGroupId: actionGroup.id
-      }
+        actionGroup.id
     ]
   }
 }
