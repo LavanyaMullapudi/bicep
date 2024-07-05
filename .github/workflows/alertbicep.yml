@@ -35,5 +35,5 @@ jobs:
           az deployment group create \
             --resource-group acr-app-rg \
             --template-file webappalerts.bicep \
-            --parameters resourceGroupName=acr-app-rg
+            --parameters subscriptionId=89a1afbb-99a3-4844-a9b3-55d84d47f784 resourceGroupName=acr-app-rg appServiceName=apptestalert
 
