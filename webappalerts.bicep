@@ -16,11 +16,11 @@ var webAppNames = [for (site in resources('Microsoft.Web/sites', resourceGroupNa
 }];
 
 resource monitorAlertsCpu 'Microsoft.Insights/metricAlerts@2020-08-01-preview' = {
-  name: '${webAppNames.name}-cpu-alert'
+  name: '${webAppNames[0].name}-cpu-alert' // Corrected to use webAppNames[0].name for the first web app name
   location: resourceGroup().location
-  scope: '${webAppNames.id}'
+  scope: webAppNames[0].id // Corrected to use webAppNames[0].id for the first web app id
   properties: {
-    description: 'Alert for high CPU usage on ${webAppNames.name}'
+    description: 'Alert for high CPU usage on ${webAppNames[0].name}'
     severity: 3 // 3 for critical
     enabled: true
     evaluationFrequency: 'PT5M' // 5 minutes
@@ -39,14 +39,14 @@ resource monitorAlertsCpu 'Microsoft.Insights/metricAlerts@2020-08-01-preview' =
       actionGroup.id
     ]
   }
-}
+};
 
 resource monitorAlertsMemory 'Microsoft.Insights/metricAlerts@2020-08-01-preview' = {
-  name: '${webAppNames.name}-memory-alert'
+  name: '${webAppNames[0].name}-memory-alert' // Corrected to use webAppNames[0].name for the first web app name
   location: resourceGroup().location
-  scope: '${webAppNames.id}'
+  scope: webAppNames[0].id // Corrected to use webAppNames[0].id for the first web app id
   properties: {
-    description: 'Alert for high memory usage on ${webAppName.name}'
+    description: 'Alert for high memory usage on ${webAppNames[0].name}' // Corrected to use webAppNames[0].name for the first web app name
     severity: 3 // 3 for critical
     enabled: true
     evaluationFrequency: 'PT5M' // 5 minutes
@@ -65,8 +65,9 @@ resource monitorAlertsMemory 'Microsoft.Insights/metricAlerts@2020-08-01-preview
       actionGroup.id
     ]
   }
-}
+};
+
 
 output actionGroupId string = actionGroup.id
-output monitorAlertsCpuIds array = [for (alert in monitorAlertsCpu) { alert.id }]
-output monitorAlertsMemoryIds array = [for (alert in monitorAlertsMemory) { alert.id }]
+output monitorAlertsCpuIds array = [monitorAlertsCpu.id]
+output monitorAlertsMemoryIds array = [monitorAlertsMemory.id]
