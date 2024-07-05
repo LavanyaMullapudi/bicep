@@ -21,11 +21,11 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
 
 var webAppNames = listWebAppNames(resourceGroupName)
 
-var webApps = [
-  for (webAppName in webAppNames) {
-    name: webAppName
-  }
-]
+//var webApps = [
+ // for (webAppName in webAppNames) {
+ //   name: webAppName
+//}
+// ]
 
 // resource webApps array = [
 //  for (webAppName in listWebAppNames(resourceGroupName)) {
@@ -34,7 +34,7 @@ var webApps = [
 // ]
 
 resource monitorAlertsCpu array = [
-  for (webApp in webApps) {
+  for (webApp in webAppNames) {
     name: '${webApp.name}-cpu-alert'
     scope: resourceId('Microsoft.Web/sites', webApp.name)
     details: {
@@ -67,7 +67,7 @@ resource monitorAlertsCpu array = [
 ]
 
 resource monitorAlertsMemory array = [
-  for (webApp in webApps) {
+  for (webApp in webAppNames) {
     name: '${webApp.name}-memory-alert'
     scope: resourceId('Microsoft.Web/sites', webApp.name)
     details: {
