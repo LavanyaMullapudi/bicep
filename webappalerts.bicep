@@ -12,6 +12,7 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
     severity: 3
     enabled: true
     criteria: {
+       odata.type: 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
         {
           metricName: 'CpuPercentage'
