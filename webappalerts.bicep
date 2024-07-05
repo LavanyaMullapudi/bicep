@@ -16,11 +16,11 @@ var webAppNames = [for (site in resources('Microsoft.Web/sites', resourceGroupNa
 }];
 
 resource monitorAlertsCpu 'Microsoft.Insights/metricAlerts@2020-08-01-preview' = {
-  name: '${webAppName.name}-cpu-alert'
+  name: '${webAppNames.name}-cpu-alert'
   location: resourceGroup().location
-  scope: '${webAppName.id}'
+  scope: '${webAppNames.id}'
   properties: {
-    description: 'Alert for high CPU usage on ${webAppName.name}'
+    description: 'Alert for high CPU usage on ${webAppNames.name}'
     severity: 3 // 3 for critical
     enabled: true
     evaluationFrequency: 'PT5M' // 5 minutes
@@ -42,9 +42,9 @@ resource monitorAlertsCpu 'Microsoft.Insights/metricAlerts@2020-08-01-preview' =
 }
 
 resource monitorAlertsMemory 'Microsoft.Insights/metricAlerts@2020-08-01-preview' = {
-  name: '${webAppName.name}-memory-alert'
+  name: '${webAppNames.name}-memory-alert'
   location: resourceGroup().location
-  scope: '${webAppName.id}'
+  scope: '${webAppNames.id}'
   properties: {
     description: 'Alert for high memory usage on ${webAppName.name}'
     severity: 3 // 3 for critical
