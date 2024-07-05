@@ -1,6 +1,7 @@
 param subscriptionId string
 param resourceGroupName string
 param appServiceName string
+param actionGroupName string = 'dev-rhythmx'
 
 var scope = '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Web/sites/${appServiceName}'
 
