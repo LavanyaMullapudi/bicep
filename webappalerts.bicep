@@ -1,7 +1,7 @@
-param resourceGroupName 'acr-app-rg'
-param actionGroupName 'dev-rhythmx'
-param logAnalyticsWorkspaceId '1d5c322a-f894-4c3d-bb61-1ff5d54ea0f0'
-param emailAddress 'sumanth.gurram@genzeon.com'
+param resourceGroupName string = 'acr-app-rg'
+param actionGroupName string = 'dev-rhythmx'
+param logAnalyticsWorkspaceId string = '1d5c322a-f894-4c3d-bb61-1ff5d54ea0f0'
+param emailAddress string = 'sumanth.gurram@genzeon.com'
 //targetScope = 'subscription'
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
@@ -18,12 +18,15 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     ]
   }
 }
+
 var webAppNames = listWebAppNames(resourceGroupName)
+
 var webApps = [
   for (webAppName in webAppNames) {
     name: webAppName
   }
 ]
+
 // resource webApps array = [
 //  for (webAppName in listWebAppNames(resourceGroupName)) {
 //    name: webAppName
