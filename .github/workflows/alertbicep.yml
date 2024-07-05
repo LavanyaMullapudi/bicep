@@ -1,0 +1,39 @@
+name: Deploy Monitoring and Alerts.
+
+on:
+  push:
+    branches:
+      - alerts
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+
+    
+      - name: Install Azure CLI
+        env:
+          AZURE_SUBSCRIPTION_ID: "89a1afbb-99a3-4844-a9b3-55d84d47f784"
+          AZURE_TENANT_ID: "e00b6687-c776-4514-8a12-5549c0aabb79"
+          AZURE_CLIENT_ID: "1bca4da6-09b0-42ea-97df-bda32e645f38"
+          AZURE_CLIENT_SECRET: "WoM8Q~g5U-q0gs~wa0EHnU1o_yo2VsjsrE-_9cwS"
+        uses: azure/cli@v1
+        with:
+          azcliversion: 2.33.0
+          inlinescript: 
+              az login --service-principal --tenant $AZURE_TENANT_ID -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --output none
+
+      - name: Set Azure CLI configuration permissions
+        run: sudo chown -R $USER ~/.azure
+        if: runner.os == 'Linux'
+
+      - name: Deploy Bicep template
+        run: |
+          az deployment group create \
+            --resource-group acr-app-rg \
+            --template-file alerts.bicep \
+            --parameters resourceGroupName=acr-app-rg
+
