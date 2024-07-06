@@ -7,16 +7,16 @@ var scope = '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   name: actionGroupName
-  location: resourceGroup().location
+  location: 'global'
   properties: {
     groupShortName: 'actiongroup'
     emailReceivers: []
     // Add other receivers as needed
   }
 }
-resource appServiceResource 'Microsoft.Web/sites@2021-02-01' = {
+resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
   name: appServiceName
-  location: resourceGroup().location
+  resourceGroup: resourceGroupName
 }
 
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
@@ -47,7 +47,7 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
     enabled: true
     evaluationFrequency: 'PT1M'
     scopes: [
-      appService.id
+      appServiceResource.id
 
     ]
      severity: 3
