@@ -1,8 +1,8 @@
-param location = 'eastus'
-param AgLawRg = 'acr-app-rg'
-param ApplicationInsightsName = 'acr-app-rg'
-param loganalyticsworkspaceName = 'acr-app-rg'
-param newActionGroupName = 'test-action'
+param location string = 'eastus'
+param AgLawRg string = 'acr-app-rg'
+param ApplicationInsightsName string = 'acr-app-rg'
+param loganalyticsworkspaceName string = 'acr-app-rg'
+param newActionGroupName string = 'test-action'
 
 resource supportTeamActionGroup 'Microsoft.Insights/actionGroups@2021-09-01' = {
   name: newActionGroupName
