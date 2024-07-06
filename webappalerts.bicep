@@ -14,10 +14,13 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     // Add other receivers as needed
   }
 }
+resource appService 'Microsoft.Web/sites@2020-06-01' existing = {
+  name: appServiceName
+}
 
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: '${appServiceName}-HighCPUAlert'
-  location: resourceGroup().location
+  location: 'global'
 
   properties: {
     description: 'Alert triggered when CPU exceeds 70% for ${appServiceName}'
@@ -32,9 +35,15 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
           operator: 'GreaterThan'
           threshold: 70
           timeAggregation: 'Average'
+          criterionType: 'StaticThresholdCriterion'
         }
       ]
     }
+    scopes: [
+      appService.id
+
+    ]
+     windowSize: 'PT1M'
     actions: [
       {
         actionGroupId: actionGroup.id
