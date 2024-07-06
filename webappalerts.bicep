@@ -16,10 +16,10 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
 }
 
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
-  name: '${appServiceName}-HighCPUAlert'
+  name: "${appServiceName}-HighCPUAlert"
   location: 'Global'
   properties: {
-    description: 'Alert triggered when CPU exceeds 70% for ${appServiceName}'
+    description: "Alert triggered when CPU exceeds 70% for ${appServiceName}"
     severity: 3
     enabled: true
     criteria: {
