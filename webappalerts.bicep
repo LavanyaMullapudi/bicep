@@ -14,8 +14,9 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     // Add other receivers as needed
   }
 }
-resource appService 'Microsoft.Web/sites@2020-06-01' existing = {
+resource appServiceResource 'Microsoft.Web/sites@2021-02-01' = {
   name: appServiceName
+  location: resourceGroup().location
 }
 
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
@@ -23,9 +24,12 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
   location: 'global'
 
   properties: {
-    description: 'Alert triggered when CPU exceeds 70% for ${appServiceName}'
-    severity: 3
-    enabled: true
+        actions: [
+      {
+        actionGroupId: actionGroup.id
+     }
+     ]
+    autoMitigate: true
     criteria: {
       'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
       allOf: [
@@ -39,17 +43,17 @@ resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
         }
       ]
     }
+    description: 'Alert triggered when CPU exceeds 70% for ${appServiceName}'
+    enabled: true
+    evaluationFrequency: 'PT1M'
     scopes: [
       appService.id
 
     ]
+     severity: 3
      windowSize: 'PT1M'
-    actions: [
-      {
-        actionGroupId: actionGroup.id
-   }
-      
-    ]
+     targetResourceRegion: 'global'
+     targetResourceType: 'Microsoft.Web/sites'
   }
 }
 
