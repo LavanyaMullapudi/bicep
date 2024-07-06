@@ -3,7 +3,7 @@ param resourceGroupName string
 param appServiceName string
 param actionGroupName string = 'dev-rhythmx-new'
 
-var scope = '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Web/sites/${appServiceName}'
+// var scope = '/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.Web/sites/${appServiceName}'
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   name: actionGroupName
@@ -16,7 +16,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
 }
 resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
   name: appServiceName
-  resourceGroup: resourceGroupName
+ // resourceGroup: resourceGroupName
 }
 
 resource alert 'Microsoft.Insights/metricalerts@2018-03-01' = {
