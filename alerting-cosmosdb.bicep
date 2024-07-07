@@ -37,6 +37,7 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
           dimensions: []
         }
       ]
+     'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
     actions: [
       {
