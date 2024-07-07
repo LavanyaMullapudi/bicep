@@ -9,13 +9,13 @@ param appserviceName string = 'test-webapp-test'
 
 var environmentConfigurationMap = {
   qademo: {
-    shortprefix: '${environmentType}-cd-rx'
+    shortprefix: '${environmentType}'
     prefix: '${environmentType}-cd-rx'
     emaillist: emailinternal
     }
   
  stagedemo: {
-    shortprefix: '${environmentType}-cd-rx'
+    shortprefix: '${environmentType}'
     prefix: '${environmentType}-cd-rx'
     emaillist: emailinternal
     }
