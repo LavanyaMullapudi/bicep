@@ -40,7 +40,7 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
     }
     actions: [
       {
-        actionGroupId: actionGroupResource.id
+        actionGroupId: ActionGroupName.id
       }
     ]
     evaluationFrequency: 'PT5M'
