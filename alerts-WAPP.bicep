@@ -18,7 +18,7 @@ resource supportTeamActionGroup 'Microsoft.Insights/actionGroups@2021-09-01' = {
 
 resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
   name: appServiceName
-  location: location
+ // location: location
 }
 
 resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
@@ -45,7 +45,7 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
     }
     actions: [
       {
-        actionGroupId: actionGroupId.id
+        actionGroupId: supportTeamActionGroup.id
       }
     ]
     evaluationFrequency: 'PT5M'
