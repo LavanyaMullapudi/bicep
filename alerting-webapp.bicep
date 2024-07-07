@@ -5,6 +5,7 @@ param ApplicationInsightsName string = 'test-webapp-appins'
 // param newActionGroupName string = 'Test-action-group'
 param environmentType string = 'qademo'
 param emailinternal string = 'lavanya.mullapudi@rhythmx.ai'
+param appserviceName string = 'test-webapp-test'
 
 var environmentConfigurationMap = {
   qademo: {
@@ -32,8 +33,7 @@ resource ActionGroupName 'Microsoft.Insights/actionGroups@2021-09-01' = {
 
 resource ApplicationInsights 'Microsoft.Insights/components@2015-05-01' existing = {
   name: ApplicationInsightsName
-  scope: resourceGroup(AgRgName)
-}
+  }
 
 /*
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
