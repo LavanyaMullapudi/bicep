@@ -32,6 +32,7 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
       appServiceResource.id
     ]
     criteria: {
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
       allOf: [
         {
           metricName: 'Percentage CPU'
