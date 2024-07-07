@@ -1,5 +1,5 @@
 param location string = 'Global'
-param AgLawRg string = 'acr-app-rg'
+//param AgLawRg string = 'acr-app-rg'
 param ApplicationInsightsName string = 'test-webapp-appins'
 // param loganalyticsworkspaceName string = 'acr-app-rg'
 // param newActionGroupName string = 'Test-action-group'
@@ -109,8 +109,7 @@ resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
             threshold: 80
             name: 'Metric1'
             metricNamespace: 'microsoft.insights/components'
-            // metricName: 'performanceCounters/memoryAvailableBytes'
-            metricName: 'performanceCounters/processor utilization'
+            metricName: 'performanceCounters/memoryAvailableBytes'
             operator: 'GreaterThan'
             timeAggregation: 'Average'
             criterionType: 'StaticThresholdCriterion'
