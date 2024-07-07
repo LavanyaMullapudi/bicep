@@ -18,7 +18,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
 
 resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: alertRuleName
-  location: resourceGroup().location
+  location: 'Global'
   properties: {
     description: 'Alert on RU consumption greater than threshold for Azure Cosmos DB'
     severity: 3
