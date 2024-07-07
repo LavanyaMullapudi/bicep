@@ -23,7 +23,7 @@ resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
 
 resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: 'HighCPUPercentageAlert'
-  location: resourceGroup().location
+  location: location
   properties: {
     description: 'Alert on CPU greater than 80% for Azure Web App'
     severity: 3
