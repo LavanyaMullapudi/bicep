@@ -23,12 +23,21 @@ var environmentConfigurationMap = {
 
 resource ActionGroupName 'Microsoft.Insights/actionGroups@2021-09-01' = {
   name: '${environmentConfigurationMap[environmentType].prefix}-actiongroup'
-  location: 'Global'
+  location: 'EastUS'
   properties: {
     enabled: true
     groupShortName: '${environmentConfigurationMap[environmentType].shortprefix}-ag'
-    emailReceivers: environmentConfigurationMap[environmentType].emaillist
-    actions: []
+  //  emailReceivers: environmentConfigurationMap[environmentType].emaillist
+    actions: [
+      {
+        actionType: 'SendEmail'
+        emailReceiver: {
+           emailSubject: 'High CPU Alert'
+           emailBody: 'The CPU usage on Azure Application Insights has exceeded the threshold.'
+           emailAddress: environmentConfigurationMap[environmentType].emaillist
+        }
+      }
+    ]
   }
 }
 
