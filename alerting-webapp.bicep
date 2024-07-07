@@ -1,6 +1,6 @@
 param location string = 'Global'
 param AgLawRg string = 'acr-app-rg'
-param ApplicationInsightsName string = 'acr-app-rg'
+param ApplicationInsightsName string = 'test-webapp-appins'
 // param loganalyticsworkspaceName string = 'acr-app-rg'
 // param newActionGroupName string = 'Test-action-group'
 param environmentType string = 'qademo'
@@ -46,7 +46,7 @@ resource Appservice 'Microsoft.Web/sites@2015-08-01' existing = {
 }
 
 resource AppServiceLowMemoryAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'Appservice-LowMemory-Alert'
+  name: '${appserviceName}-LowMemory-Alert'
   location: 'Global' 
   properties: {
     actions: [
@@ -84,7 +84,7 @@ resource AppServiceLowMemoryAlert 'Microsoft.Insights/metricAlerts@2018-03-01' =
 }
 
 resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'Appservice-HighCPU-Alert'
+  name: '${appserviceName}-HighCPU-Alert'
   location: 'Global' 
   properties: {
     actions: [
@@ -99,7 +99,8 @@ resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
             threshold: 80
             name: 'Metric1'
             metricNamespace: 'microsoft.insights/components'
-            metricName: 'performanceCounters/memoryAvailableBytes'
+            // metricName: 'performanceCounters/memoryAvailableBytes'
+            metricName: 'performanceCounters/processor utilization'
             operator: 'GreaterThan'
             timeAggregation: 'Average'
             criterionType: 'StaticThresholdCriterion'
