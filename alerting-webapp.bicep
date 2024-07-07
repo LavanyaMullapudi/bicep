@@ -25,7 +25,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   name: loganalyticsworkspaceName
   scope: resourceGroup(AgLawRg)
 }
-
+/*
 resource diagnosticLogs 'microsoft.insights/diagnosticSettings@2021-05-01-preview' = {
   name: ApplicationInsights.name
  scope: ApplicationInsights
@@ -54,7 +54,7 @@ resource diagnosticLogs 'microsoft.insights/diagnosticSettings@2021-05-01-previe
     ]
   }
 }
-
+*/
 resource AppServiceLowMemoryAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: 'Appservice-LowMemory-Alert'
   location: 'Global' 
