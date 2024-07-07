@@ -28,6 +28,7 @@ resource ActionGroupName 'Microsoft.Insights/actionGroups@2021-09-01' = {
     enabled: true
     groupShortName: '${environmentConfigurationMap[environmentType].shortprefix}-ag'
     emailReceivers: environmentConfigurationMap[environmentType].emaillist
+    actions: []
   }
 }
 
