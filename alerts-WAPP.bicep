@@ -18,10 +18,10 @@ resource supportTeamActionGroup 'Microsoft.Insights/actionGroups@2021-09-01' = {
 
 resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
   name: appServiceName
-  location: resourceGroup().location
+  location: location
 }
 
-resource alertResource 'Microsoft.Insights/metricAlerts@2021-04-01-preview' = {
+resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: 'HighCPUPercentageAlert'
   location: resourceGroup().location
   properties: {
@@ -53,4 +53,4 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2021-04-01-preview' = {
   }
 }
 
-output alertResourceId string = alertResource.id
+output alertResourceId string = supportTeamActionGroup.id
