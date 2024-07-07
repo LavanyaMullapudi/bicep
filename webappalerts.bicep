@@ -8,6 +8,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   location: 'global'
   properties: {
     groupShortName: 'actiongroup'
+    enabled: true
     emailReceivers: []
     // Add other receivers as needed
   }
