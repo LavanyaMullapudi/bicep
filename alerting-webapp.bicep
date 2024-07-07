@@ -1,68 +1,57 @@
-param location string = 'eastus'
+param location string = 'Global'
 param AgLawRg string = 'acr-app-rg'
 param ApplicationInsightsName string = 'acr-app-rg'
-param loganalyticsworkspaceName string = 'acr-app-rg'
-param newActionGroupName string = 'test-action'
+// param loganalyticsworkspaceName string = 'acr-app-rg'
+// param newActionGroupName string = 'Test-action-group'
+param environmentType string = 'qademo'
+param emailinternal string = 'lavanya.mullapudi@rhythmx.ai'
 
-resource supportTeamActionGroup 'Microsoft.Insights/actionGroups@2021-09-01' = {
-  name: newActionGroupName
-  location: location
-  tags: {
-    displayName: newActionGroupName
-  }
+var environmentConfigurationMap = {
+  qademo: {
+    shortprefix: '${environmentType}-cd-rx'
+    prefix: '${environmentType}-cd-rx'
+    emaillist: emailinternal
+    }
+  
+ stagedemo: {
+    shortprefix: '${environmentType}-cd-rx'
+    prefix: '${environmentType}-cd-rx'
+    emaillist: emailinternal
+    }
+}
+
+resource ActionGroupName 'Microsoft.Insights/actionGroups@2021-09-01' = {
+  name: '${environmentConfigurationMap[environmentType].prefix}-actiongroup'
+  location: 'Global'
   properties: {
-    groupShortName: newActionGroupName
     enabled: true
-    actions: []
+    groupShortName: '${environmentConfigurationMap[environmentType].shortprefix}-ag'
+    emailReceivers: environmentConfigurationMap[environmentType].emaillist
   }
 }
 
 resource ApplicationInsights 'Microsoft.Insights/components@2015-05-01' existing = {
   name: ApplicationInsightsName
+  scope: resourceGroup(AgRgName)
 }
 
+/*
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: loganalyticsworkspaceName
   scope: resourceGroup(AgLawRg)
 }
-/*
-resource diagnosticLogs 'microsoft.insights/diagnosticSettings@2021-05-01-preview' = {
-  name: ApplicationInsights.name
- scope: ApplicationInsights
-  properties: {
-    workspaceId: logAnalyticsWorkspace.id
-     logs: [
-            {
-                category: null
-                categoryGroup: 'allLogs'
-                enabled: true
-               // retentionPolicy: {
-                //days: 90
-                //enabled: false
-               // }
-            }
-        ]
-		metrics: [		  
-            {
-                enabled: true
-               // retentionPolicy: {
-               //     days: 90
-                //    enabled: true
-              //  }
-				category: 'AllMetrics'					   
-            }
-    ]
-  }
-}
 */
+resource Appservice 'Microsoft.Web/sites@2015-08-01' existing = {
+  name: appserviceName 
+}
+
 resource AppServiceLowMemoryAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: 'Appservice-LowMemory-Alert'
   location: 'Global' 
-  
   properties: {
     actions: [
       {
-        actionGroupId: supportTeamActionGroup.id
+        actionGroupId: ActionGroupName.id
       }
     ]
     autoMitigate: true
@@ -97,11 +86,10 @@ resource AppServiceLowMemoryAlert 'Microsoft.Insights/metricAlerts@2018-03-01' =
 resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: 'Appservice-HighCPU-Alert'
   location: 'Global' 
-  
   properties: {
     actions: [
       {
-        actionGroupId: supportTeamActionGroup.id
+        actionGroupId: ActionGroupName.id
       }
     ]
     autoMitigate: true
@@ -120,7 +108,7 @@ resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
       ]
       'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
-    description: 'Fires when Available Memory is GreaterThan 1.5GB'
+    description: 'Fires when Available CPU is GreaterThan 80 percent'
     enabled: true
     evaluationFrequency: 'PT1M'
     scopes: [
@@ -129,6 +117,43 @@ resource AppServiceHighCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     severity: 2
     targetResourceRegion: location
     targetResourceType: 'microsoft.insights/components'
+    windowSize: 'PT5M'
+  }
+}
+
+resource AppService5xx 'microsoft.insights/metricalerts@2018-03-01' = {
+  name: '${appserviceName}-AppService5xx'
+  location: 'Global'  
+  properties: {
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+    autoMitigate: false
+    criteria: {
+      allOf: [
+        {
+           threshold: 5
+           name: 'Metric1'
+           metricNamespace: 'Microsoft.Web/sites'
+           metricName: 'Http5xx'
+           operator: 'GreaterThan'
+           timeAggregation: 'Average'
+           criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+    }
+    description: 'Fires when AppService HTTP response code is 5xx'
+    enabled: true
+    evaluationFrequency: 'PT1M'
+    scopes: [
+      Appservice.id
+    ]
+    severity: 2
+    targetResourceRegion: location
+    targetResourceType: 'Microsoft.Web/sites'
     windowSize: 'PT5M'
   }
 }
