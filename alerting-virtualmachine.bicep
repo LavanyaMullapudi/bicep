@@ -1,5 +1,5 @@
 param location string = 'Global'
-param vmName string = ''
+param vmName string = 'testvm'
 
 resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing = {
   name: existingActionGroupName
