@@ -15,7 +15,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
   name: existingActionGroupName
   // scope: resourceGroup(AgRgName)
 }
-
+/*
 resource alertRule 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
@@ -48,7 +48,7 @@ resource alertRule 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
-/*
+*/
 resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: alertRuleName
   location: 'Global'
@@ -78,8 +78,9 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
       }
     ]
     evaluationFrequency: 'PT5M'
+    targetResourceType: 'Microsoft.DocumentDB/databaseAccounts'
     windowSize: 'PT5M'
   }
 }
-*/
+
 // output alertResourceId string = alertRule.id
