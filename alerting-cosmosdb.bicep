@@ -40,7 +40,7 @@ resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
           name: 'DatabaseAccountName'
           operator: 'Include'
           values: [
-            cosmosDBAccountName
+            cosmosDbAccountName
           ]
         }
       ]
