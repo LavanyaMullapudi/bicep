@@ -8,7 +8,7 @@ param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
 
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-03-15' existing = {
   name: cosmosDbAccountName
-  location: 'EastUS2'
+ // location: 'EastUS2'
 }
 
 resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing = {
@@ -25,7 +25,7 @@ resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
     isEnabled: true
     actions: [
       {
-        actionGroupId: actionGroupId
+        actionGroupId: ActionGroupName.id
       }
     ]
     condition: {
