@@ -68,6 +68,7 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           operator: 'GreaterThan'
           threshold: 10000  // Replace with your desired RU threshold
           timeAggregation: 'Maximum'
+          criterionType: 'StaticThresholdCriterion'	
           dimensions: []
         }
       ]
