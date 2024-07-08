@@ -74,11 +74,11 @@ resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           operator: 'GreaterThan'
           threshold: 3 // Example threshold (adjust as needed)
           timeAggregation: 'Count'
-          metricTriggerType: 'MetricThreshold'
+         // metricTriggerType: 'MetricThreshold'
           criterionType: 'StaticThresholdCriterion'	
           dimensions: [
-               name: 'StatusCode'
-               operator: 'Include'
+               name: 'StatusCode',
+               operator: 'Include',
                values: [
               '429'
           ]
