@@ -16,7 +16,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
   // scope: resourceGroup(AgRgName)
 }
 
-resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+resource cosmosRUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
   properties: {
@@ -54,36 +54,52 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: 'PT5M'
   }
 }
-resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
-  name: '${cosmosDbAccountName}-429ErrorsAlert'
+
+resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
   properties: {
-    description: 'Alert triggered when 429 (Request Rate Too Large) errors exceed threshold'
-    severity: 3 // Adjust severity as needed (0 - 4)
-    isEnabled: true
-    actions: [
+     actions: [
       {
         actionGroupId: ActionGroupName.id
       }
     ]
-    condition: {
-      name: 'Metric1'
-      metricName: 'Requests'
-      metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
-      operator: 'GreaterThan'
-      threshold: 3 // Example threshold (adjust as needed)
-      timeAggregation: 'Count'
-      metricTriggerType: 'MetricThreshold'
-      dimensions: [
+    autoMitigate: true
+        criteria: {
+      allOf: [
         {
-          name: 'StatusCode'
-          operator: 'Include'
-          values: [
-            '429'
+          name: 'Metric1'
+          metricName: 'Requests'
+          metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
+          operator: 'GreaterThan'
+          threshold: 3 // Example threshold (adjust as needed)
+          timeAggregation: 'Count'
+          metricTriggerType: 'MetricThreshold'
+          criterionType: 'StaticThresholdCriterion'	
+          dimensions: [
+               name: 'StatusCode'
+               operator: 'Include'
+               values: [
+              '429'
           ]
+         ]
         }
       ]
+     'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
+    description: 'Alert triggered when 429 (Request Rate Too Large) errors exceed threshold'
+    severity: 3
+    enabled: true
+    scopes: [
+      cosmosDbAccount.id
+    ]
+
+   
+    evaluationFrequency: 'PT5M'
+    targetResourceType: 'Microsoft.DocumentDB/databaseAccounts'
+    windowSize: 'PT5M'
   }
 }
+
+
 // output alertResourceId string = alertRule.id
