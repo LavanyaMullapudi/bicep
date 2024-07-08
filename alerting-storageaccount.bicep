@@ -1,5 +1,6 @@
 param location string = 'Global'
-param existingActionGroupName string = ''
+param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
+param storageaccountname string = 'sriyanshitest'
 
 resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing = {
   name: existingActionGroupName
@@ -7,14 +8,51 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
 }
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing= {
-  name: '${storageaccountnameprefix}storage'
+  name: 'storageaccountname'
 }
 
-//Alert for storage account login failure exceeding 5 counts
-resource storageaccountmetricAlerts 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'storageaccount-loginfail-alert'
-  location: location
-  
+
+resource StorageAccountCapacityAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'StorageAccount-Highcapacity-Alert'
+  location: 'Global' 
+    properties: {
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+    autoMitigate: true
+    criteria: {
+      allOf: [
+        {
+            threshold: 4398046511104
+            name: 'Metric1'
+            metricNamespace: 'microsoft.storage/storageaccounts'
+            metricName: 'UsedCapacity'
+            operator: 'GreaterThan'
+            timeAggregation: 'Average'
+            criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+    }
+    description: 'Fires when Storageaccount Capacity consumed 4.5TB'
+    enabled: true
+    evaluationFrequency: 'PT15M'
+    scopes: [
+      storageaccount.id 
+   ]
+    severity: 2
+    targetResourceRegion: location
+    targetResourceType: 'Microsoft.Storage/storageAccounts'
+    windowSize: 'PT1H'
+  }
+}
+
+// Alert for StorageAccount Availability
+resource StorageAccountAvaialbilityAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: 'StorageAccount-Availability-Alert'
+  location: 'Global' 
   properties: {
     actions: [
       {
@@ -25,40 +63,28 @@ resource storageaccountmetricAlerts 'Microsoft.Insights/metricAlerts@2018-03-01'
     criteria: {
       allOf: [
         {
-            threshold: 5
+            threshold: 98
             name: 'Metric1'
-            metricNamespace: 'Microsoft.Storage/StorageAccounts'
-            metricName: 'Transactions'
-            dimensions: [
-              {
-                name: 'ResponseType'
-                operator: 'Exclude'
-                values: ['Success']
-              }
-              {
-                name: 'ApiName'
-                operator: 'Include'
-                values: ['SftpConnect']
-              }
-            ]
-            operator: 'GreaterThan'
-            timeAggregation: 'Total'
+            metricNamespace: 'microsoft.storage/storageaccounts'
+            metricName: 'Availability'
+            operator: 'LessThan'
+            timeAggregation: 'Average'
             criterionType: 'StaticThresholdCriterion'
         }
       ]
-      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
-    description: 'SFTP login failure count exceeds 5 in the last 5 min'
+    description: 'Fires when storage account availability threshold is below 98%'
     enabled: true
     evaluationFrequency: 'PT1M'
-    targetResourceType: 'Microsoft.Storage/StorageAccounts'
     scopes: [
-      storageaccount.id
-
-    ]
-    severity: 3
+      storageaccount.id ]
+    severity: 0
     targetResourceRegion: location
-    windowSize: 'PT1M'
+    targetResourceType: 'Microsoft.Storage/storageAccounts'
+    windowSize: 'PT5M'
   }
 }
+
+
 
