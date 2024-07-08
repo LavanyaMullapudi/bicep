@@ -99,7 +99,7 @@ resource vmmetricAvailableMemory 'Microsoft.Insights/metricAlerts@2018-03-01' = 
   properties: {
     actions: [
       {
-        actionGroupId: supportTeamActionGroup.id
+        actionGroupId: ActionGroupName.id
       }
     ]
     autoMitigate: true
