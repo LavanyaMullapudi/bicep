@@ -95,8 +95,6 @@ resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     scopes: [
       cosmosDbAccount.id
     ]
-
-   
     evaluationFrequency: 'PT5M'
     targetResourceType: 'Microsoft.DocumentDB/databaseAccounts'
     windowSize: 'PT5M'
@@ -104,4 +102,4 @@ resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
 }
 
 
-// output alertResourceId string = alertRule.id
+
