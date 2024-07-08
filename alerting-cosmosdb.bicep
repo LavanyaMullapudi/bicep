@@ -77,11 +77,13 @@ resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
          // metricTriggerType: 'MetricThreshold'
           criterionType: 'StaticThresholdCriterion'	
           dimensions: [
-               name: 'StatusCode',
-               operator: 'Include',
+             {
+               name: 'StatusCode'
+               operator: 'Include'
                values: [
               '429'
           ]
+         }
          ]
         }
       ]
