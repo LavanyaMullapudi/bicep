@@ -69,7 +69,7 @@ resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
       allOf: [
         {
           name: 'Metric1'
-          metricName: 'Requests'
+          metricName: 'RequestRateTooLarge'
           metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
           operator: 'GreaterThan'
           threshold: 3 // Example threshold (adjust as needed)
