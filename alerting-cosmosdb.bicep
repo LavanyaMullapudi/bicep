@@ -54,5 +54,36 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: 'PT5M'
   }
 }
-
+resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
+  name: '${cosmosDbAccountName}-429ErrorsAlert'
+  location: 'Global'
+  properties: {
+    description: 'Alert triggered when 429 (Request Rate Too Large) errors exceed threshold'
+    severity: 3 // Adjust severity as needed (0 - 4)
+    isEnabled: true
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+    condition: {
+      name: 'Metric1'
+      metricName: 'Requests'
+      metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
+      operator: 'GreaterThan'
+      threshold: 3 // Example threshold (adjust as needed)
+      timeAggregation: 'Count'
+      metricTriggerType: 'MetricThreshold'
+      dimensions: [
+        {
+          name: 'StatusCode'
+          operator: 'Include'
+          values: [
+            '429'
+          ]
+        }
+      ]
+    }
+  }
+}
 // output alertResourceId string = alertRule.id
