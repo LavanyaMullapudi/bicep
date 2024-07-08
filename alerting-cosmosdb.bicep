@@ -49,8 +49,8 @@ resource alertRule 'Microsoft.Insights/metricAlerts@2018-03-01' = {
 }
 
 */
-resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
-  name: alertRuleName
+resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
   properties: {
     description: 'Alert on RU consumption greater than threshold for Azure Cosmos DB'
