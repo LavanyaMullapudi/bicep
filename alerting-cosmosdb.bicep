@@ -53,15 +53,16 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
   properties: {
-    description: 'Alert on RU consumption greater than threshold for Azure Cosmos DB'
-    severity: 3
-    enabled: true
-    scopes: [
-      cosmosDbAccount.id
+     actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
     ]
-    criteria: {
+    autoMitigate: true
+        criteria: {
       allOf: [
         {
+          name: 'Metric1'
           metricName: 'TotalRequestUnits'
           metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
           operator: 'GreaterThan'
@@ -72,11 +73,14 @@ resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
       ]
      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
-    actions: [
-      {
-        actionGroupId: ActionGroupName.id
-      }
+    description: 'Alert on RU consumption greater than threshold for Azure Cosmos DB'
+    severity: 3
+    enabled: true
+    scopes: [
+      cosmosDbAccount.id
     ]
+
+   
     evaluationFrequency: 'PT5M'
     targetResourceType: 'Microsoft.DocumentDB/databaseAccounts'
     windowSize: 'PT5M'
