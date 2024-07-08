@@ -16,7 +16,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
   // scope: resourceGroup(AgRgName)
 }
 
-resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
+resource alertRule 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
   properties: {
