@@ -1,6 +1,6 @@
 param resourceGroupName string = 'acr-app-rg'
 param cosmosDbAccountName string = 'qademo-cd-rx-cosmosdb'
-param alertRuleName string = 'COSMOS-RU-Alert'
+// param alertRuleName string = 'COSMOS-RU-Alert'
 param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
 
 
@@ -15,7 +15,39 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
   // scope: resourceGroup(AgRgName)
 }
 
+resource alertRule 'Microsoft.Insights/metricalerts@2020-10-01-preview' = {
+  name: '${cosmosDbAccountName}-HighRequestChargeAlert'
+  location: resourceGroup().location
+  properties: {
+    description: 'Alert triggered when request charge exceeds threshold'
+    severity: 3 // 0 - 4 (from lowest to highest severity)
+    isEnabled: true
+    actions: [
+      {
+        actionGroupId: actionGroupId
+      }
+    ]
+    condition: {
+      metricName: 'RequestCharge'
+      metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
+      operator: 'GreaterThan'
+      threshold: 1000 // Example threshold (adjust as needed)
+      timeAggregation: 'Average'
+      metricTriggerType: 'MetricThreshold'
+      dimensions: [
+        {
+          name: 'DatabaseAccountName'
+          operator: 'Include'
+          values: [
+            cosmosDBAccountName
+          ]
+        }
+      ]
+    }
+  }
+}
 
+/*
 resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   name: alertRuleName
   location: 'Global'
@@ -48,5 +80,5 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
     windowSize: 'PT5M'
   }
 }
-
-output alertResourceId string = alertResource.id
+*/
+output alertResourceId string = alertRule.id
