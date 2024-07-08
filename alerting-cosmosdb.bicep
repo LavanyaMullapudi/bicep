@@ -15,40 +15,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
   name: existingActionGroupName
   // scope: resourceGroup(AgRgName)
 }
-/*
-resource alertRule 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: '${cosmosDbAccountName}-HighRequestChargeAlert'
-  location: 'Global'
-  properties: {
-    description: 'Alert triggered when request charge exceeds threshold'
-    severity: 3 // 0 - 4 (from lowest to highest severity)
-    isEnabled: true
-    actions: [
-      {
-        actionGroupId: ActionGroupName.id
-      }
-    ]
-    condition: {
-      metricName: 'RequestCharge'
-      metricNamespace: 'Microsoft.DocumentDB/databaseAccounts'
-      operator: 'GreaterThan'
-      threshold: 1000 // Example threshold (adjust as needed)
-      timeAggregation: 'Average'
-      metricTriggerType: 'MetricThreshold'
-      dimensions: [
-        {
-          name: 'DatabaseAccountName'
-          operator: 'Include'
-          values: [
-            cosmosDbAccountName
-          ]
-        }
-      ]
-    }
-  }
-}
 
-*/
 resource alertResource 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${cosmosDbAccountName}-HighRequestChargeAlert'
   location: 'Global'
