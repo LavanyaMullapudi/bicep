@@ -8,7 +8,7 @@ resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing 
 }
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing= {
-  name: 'storageaccountname'
+  name: storageaccountname
 }
 
 
@@ -51,7 +51,7 @@ resource StorageAccountCapacityAlert 'Microsoft.Insights/metricAlerts@2018-03-01
 
 // Alert for StorageAccount Availability
 resource StorageAccountAvaialbilityAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: 'StorageAccount-Availability-Alert'
+  name: '${storageaccountname}-Availability-Alert'
   location: 'Global' 
   properties: {
     actions: [
@@ -78,7 +78,8 @@ resource StorageAccountAvaialbilityAlert 'Microsoft.Insights/metricAlerts@2018-0
     enabled: true
     evaluationFrequency: 'PT1M'
     scopes: [
-      storageaccount.id ]
+      storageaccount.id 
+    ]
     severity: 0
     targetResourceRegion: location
     targetResourceType: 'Microsoft.Storage/storageAccounts'
