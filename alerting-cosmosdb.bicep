@@ -82,4 +82,4 @@ resource alertResource 'Microsoft.Insights/metricalerts@2018-03-01' = {
   }
 }
 */
-output alertResourceId string = alertRule.id
+// output alertResourceId string = alertRule.id
