@@ -56,7 +56,7 @@ resource cosmosRUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
 }
 
 resource cosmos429Alert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
-  name: '${cosmosDbAccountName}-HighRequestChargeAlert'
+  name: '${cosmosDbAccountName}-RequestTooLargeAlert'
   location: 'Global'
   properties: {
      actions: [
