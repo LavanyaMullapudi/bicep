@@ -115,6 +115,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
         actionGroupId: ActionGroupName.id
       }
     ]
+       alertSensitivity: 'High'
   }
 }
 
