@@ -100,6 +100,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     criteria: {
       allOf: [
         {
+          name: 'Metric1'
           metricName: 'HealthCheckStatus'
           metricNamespace: 'Microsoft.Web/sites'
           operator: 'LessThan' // Health check is often considered degraded when availability is less than 100%
