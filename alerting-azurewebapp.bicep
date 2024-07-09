@@ -28,7 +28,7 @@ resource cpuAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
       allOf: [
         {
           name: 'Metric1'
-          metricName: 'CpuPercentage'
+          metricName: 'Percentage CPU'
           metricNamespace: 'microsoft.web/sites'
           operator: 'GreaterThan'
           threshold: 80
