@@ -13,7 +13,7 @@ resource Appservice 'Microsoft.Web/sites@2015-08-01' existing = {
 
 resource cpuAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${appserviceName}-HighCPU-Alert'
-  location: resourceGroup().location
+  location: 'Global'
   tags: {}
   properties: {
     description: 'Alert triggered when CPU percentage exceeds 80% for Azure Web App'
