@@ -14,7 +14,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' existing = {
   name: appName
   //scope: resourceGroup(resourceGroupName)
 }
-resource cpuAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+resource AppserviceCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${appserviceName}-HighCPU-Alert'
   location: 'Global'
   properties: {
@@ -47,3 +47,42 @@ resource cpuAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     ]
   }
 }
+
+resource AppServiceMemory 'microsoft.insights/metricalerts@2018-03-01' = {
+  name: '${appserviceName}-AppService5xx'
+  location: 'Global'  
+  properties: {
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+    autoMitigate: false
+    criteria: {
+      allOf: [
+        {
+           threshold: 5
+           name: 'Metric1'
+           metricNamespace: 'Microsoft.Web/sites'
+           metricName: 'AverageMemoryWorkingSet'
+           operator: 'GreaterThan'
+           threshold: 3500
+           timeAggregation: 'Average'
+           criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+    }
+    description: 'Fires when AppService HTTP response code is 5xx'
+    enabled: true
+    evaluationFrequency: 'PT1M'
+    scopes: [
+      Appservice.id
+    ]
+    severity: 2
+    targetResourceRegion: location
+    targetResourceType: 'Microsoft.Web/sites'
+    windowSize: 'PT5M'
+  }
+}
+
