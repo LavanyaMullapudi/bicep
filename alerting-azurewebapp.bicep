@@ -1,7 +1,7 @@
 param appserviceName string = 'test-webapp-test'
 param appName string = 'ASP-acrapprg-bba3'
 param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
-
+param location string = 'Global'
 
 resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing = {
   name: existingActionGroupName
@@ -61,7 +61,6 @@ resource AppServiceMemory 'microsoft.insights/metricalerts@2018-03-01' = {
     criteria: {
       allOf: [
         {
-           threshold: 5
            name: 'Metric1'
            metricNamespace: 'Microsoft.Web/sites'
            metricName: 'AverageMemoryWorkingSet'
