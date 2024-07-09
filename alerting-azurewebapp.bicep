@@ -85,3 +85,36 @@ resource AppServiceMemory 'microsoft.insights/metricalerts@2018-03-01' = {
   }
 }
 
+resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+  name: '${appserviceName}-HealthCheck-Alert'
+  location: 'Global'
+  properties: {
+    description: 'Alert triggered when health check status indicates service degradation for Azure Web App'
+    severity: 2
+    enabled: true
+    scopes: [
+      appserviceName.id
+    ]
+    evaluationFrequency: 'PT1M'
+    windowSize: 'PT5M'
+    criteria: {
+      allOf: [
+        {
+          metricName: 'Availability'
+          metricNamespace: 'Microsoft.Web/sites'
+          operator: 'LessThan' // Health check is often considered degraded when availability is less than 100%
+          threshold: 100 // Example threshold (less than 100% availability)
+          timeAggregation: 'Average'
+          criterionType: 'DynamicThresholdCriterion' // Health check often uses dynamic thresholds based on historical data
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+    }
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+  }
+}
+
