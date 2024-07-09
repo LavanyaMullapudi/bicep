@@ -92,6 +92,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     description: 'Alert triggered when health check status indicates service degradation for Azure Web App'
     severity: 2
     enabled: true
+    alertSensitivity: 'High'
     scopes: [
       Appservice.id
     ]
@@ -115,7 +116,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
         actionGroupId: ActionGroupName.id
       }
     ]
-       alertSensitivity: 'High'
+       
   }
 }
 
