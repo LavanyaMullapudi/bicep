@@ -93,7 +93,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     severity: 2
     enabled: true
     scopes: [
-      appserviceName.id
+      Appservice.id
     ]
     evaluationFrequency: 'PT1M'
     windowSize: 'PT5M'
