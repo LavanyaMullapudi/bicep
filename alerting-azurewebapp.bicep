@@ -1,5 +1,5 @@
 param appserviceName string = 'test-webapp-test'
-param appName string = 'ASP-acrapprg-bba3'
+param appServicePlanName string = 'ASP-acrapprg-bba3'
 param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
 param location string = 'global'
 
@@ -11,7 +11,7 @@ resource Appservice 'Microsoft.Web/sites@2015-08-01' existing = {
   name: appserviceName 
 }
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' existing = {
-  name: appName
+  name: appServicePlanName
   //scope: resourceGroup(resourceGroupName)
 }
 resource AppserviceCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
@@ -48,7 +48,7 @@ resource AppserviceCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
-resource AppServiceMemory 'microsoft.insights/metricalerts@2018-03-01' = {
+resource AppServiceMemoryAlert 'microsoft.insights/metricalerts@2018-03-01' = {
   name: '${appserviceName}-AppService5xx'
   location: 'Global'  
   properties: {
@@ -85,7 +85,45 @@ resource AppServiceMemory 'microsoft.insights/metricalerts@2018-03-01' = {
   }
 }
 
-resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
+resource AppService5xxAlert 'microsoft.insights/metricalerts@2018-03-01' = {
+  name: '${appserviceName}-AppService5xx'
+  location: 'Global'  
+  properties: {
+    actions: [
+      {
+        actionGroupId: ActionGroupName.id
+      }
+    ]
+    autoMitigate: false
+    criteria: {
+      allOf: [
+        {
+           threshold: 5
+           name: 'Metric1'
+           metricNamespace: 'Microsoft.Web/sites'
+           metricName: 'Http5xx'
+           operator: 'GreaterThan'
+           timeAggregation: 'Average'
+           criterionType: 'StaticThresholdCriterion'
+        }
+      ]
+      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+    }
+    description: 'Fires when AppService HTTP response code is 5xx'
+    enabled: true
+    evaluationFrequency: 'PT1M'
+    scopes: [
+      Appservice.id
+    ]
+    severity: 2
+    targetResourceRegion: location
+    targetResourceType: 'Microsoft.Web/sites'
+    windowSize: 'PT5M'
+  }
+}
+
+
+resource AppserviceHealthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   name: '${appserviceName}-HealthCheck-Alert'
   location: 'Global'
   properties: {
@@ -114,7 +152,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           }
         }
       ]
-      'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+      'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
     }
     actions: [
       {
