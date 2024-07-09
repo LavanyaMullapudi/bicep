@@ -49,7 +49,7 @@ resource AppserviceCPUAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
 }
 
 resource AppServiceMemoryAlert 'microsoft.insights/metricalerts@2018-03-01' = {
-  name: '${appserviceName}-AppService5xx'
+  name: '${appserviceName}-LowMemory-Alert'
   location: 'Global'  
   properties: {
     actions: [
