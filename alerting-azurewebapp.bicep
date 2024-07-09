@@ -92,7 +92,6 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     description: 'Alert triggered when health check status indicates service degradation for Azure Web App'
     severity: 2
     enabled: true
-    alertSensitivity: 'High'
     scopes: [
       Appservice.id
     ]
@@ -106,6 +105,7 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           operator: 'LessThan' // Health check is often considered degraded when availability is less than 100%
           threshold: 100 // Example threshold (less than 100% availability)
           timeAggregation: 'Average'
+          alertSensitivity: 'High'
           criterionType: 'DynamicThresholdCriterion' // Health check often uses dynamic thresholds based on historical data
         }
       ]
