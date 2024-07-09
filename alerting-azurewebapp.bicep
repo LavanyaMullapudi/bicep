@@ -107,6 +107,10 @@ resource healthCheckAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
           timeAggregation: 'Average'
           alertSensitivity: 'High'
           criterionType: 'DynamicThresholdCriterion' // Health check often uses dynamic thresholds based on historical data
+         failingPeriods: {
+            minFailingPeriodsToAlert: int
+            numberOfEvaluationPeriods: int
+          }
         }
       ]
       'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
