@@ -1,7 +1,7 @@
 param appserviceName string = 'test-webapp-test'
 param appName string = 'ASP-acrapprg-bba3'
 param existingActionGroupName string = 'qademo-cd-rx-actiongroup'
-param location string = 'Global'
+param location string = 'global'
 
 resource ActionGroupName  'Microsoft.Insights/actionGroups@2021-09-01' existing = {
   name: existingActionGroupName
