@@ -1,0 +1,123 @@
+name: Deploy Bicep file in Presbyterian
+on:
+  workflow_dispatch:
+    inputs:
+      location:
+        required: true
+        description: 'deployment location'
+        type: string
+      environment:
+        description: select the environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - stg
+          - prd
+      createdbyemail:
+        required: true
+        description: "createdbyemail"
+        type: string      
+      project:
+        required: true
+        description: "project"
+        type: string
+      sequence:
+        required: true
+        description: "the deployment sequence that needs to be deployment"
+        type: choice
+        options:
+          - sequence1
+          - sequence2
+          - sequence3
+          - sequence4
+          - sequence5
+      resourcegroupname:
+          required: true
+          description: name of the resouce group in which the rx applications will be created
+          type: string        
+      vnetname:
+        required: true
+        description: name of the existing vnet in which the rx applications will be added
+        type: string
+      postgresdbpassword:
+        required: false
+        description: password for the postgres db
+        type: string
+      vmimagereferencename:
+        required: false
+        description: name of the vm image reference
+        type: choice
+        options:
+          - ubuntu
+          - redhat
+      vmsshkey:
+        required: false
+        description: ssh key for the vm
+        type: string
+ 
+jobs:
+  build-and-deploy:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up parameters for each sequence
+      id: set-params
+      run: |
+        sequenceparam='{
+          "sequence1": {},
+          "sequence2": {"project": "${{ inputs.project }}", "staticwebapplocation": "centralus"},
+          "sequence3": {"project": "${{ inputs.project }}", "postgresdbpassword": "${{ inputs.postgresdbpassword }}"},
+          "sequence4": {"project": "${{ inputs.project }}", "vmimagereferencename": "${{ inputs.vmimagereferencename }}", "vmsshkey": "${{ inputs.vmsshkey }}"}
+          }'
+        commonparam='{"location": "${{ inputs.location }}", "environment": "${{ inputs.environment }}", "createdbyemail": "${{ inputs.createdbyemail }}", "vnetname": "${{ inputs.vnetname }}", "resourcegroupname": "${{ inputs.resourcegroupname }}"}'
+   
+        sequence="${{ inputs.sequence }}"
+        # Extract the specific sequence parameters
+        sequence_params=$(echo $sequenceparam | jq -r --arg seq "$sequence" '.[$seq]')
+        
+        echo "Sequence Parameters"
+        echo "$sequence_params"
+       
+        echo "common Parameters"
+        echo "$commonparam"
+
+        # Combine the common parameters with the sequence-specific parameters
+        parameters=$(echo $commonparam | jq -r --argjson seq_params "$sequence_params" '. * $seq_params')
+        echo "Parameters for deployment:"
+        echo "$parameters" >> param.json
+        cat param.json
+        pwd
+        # Parse parameters to JSON format
+        echo "Parameters for json deployment:"
+        parameters_json=$(echo "$parameters" | jq -c .)
+        echo "$parameters_json" >> param1.json
+        echo "::set-output name=fileparameters_json::$(cat param1.json)"
+        echo "::set-output name=outparameters_json::'$parameters_json'"
+        echo "::set-output name=outparameters::$parameters"
+      shell: bash
+
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: 1bca4da6-09b0-42ea-97df-bda32e645f38
+        subscription-id: 89a1afbb-99a3-4844-a9b3-55d84d47f784
+        tenant-id: e00b6687-c776-4514-8a12-5549c0aabb79
+     
+    # - name: Deploy Bicep file
+    #   uses: azure/arm-deploy@v2
+    #   with:
+    #     subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
+    #     scope: subscription
+    #     region: ${{ github.event.inputs.location }}
+    #     template: ./${{inputs.sequence}}/main.bicep
+    #     parameters: ${{ toJson(fromJson(steps.set-params.outputs.parameters_json)) }}
+    #     failOnStdErr: false
+
+             
+ 
