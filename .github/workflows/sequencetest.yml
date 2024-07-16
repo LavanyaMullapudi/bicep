@@ -57,7 +57,7 @@ jobs:
     - name: Deploy Bicep file
       uses: azure/arm-deploy@v2
       with:
-        subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
+        subscriptionId: '89a1afbb-99a3-4844-a9b3-55d84d47f784'
         scope: subscription
         region: 'Global'
         template: alerting-cosmosdb.bicep
