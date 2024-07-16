@@ -59,7 +59,7 @@ jobs:
       with:
         subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
         scope: subscription
-       # region: ${{ github.event.inputs.location }}
+        region: 'Global'
         template: alerting-cosmosdb.bicep
         parameters: ${{ steps.set-params.outputs.parameters }}
         failOnStdErr: false
