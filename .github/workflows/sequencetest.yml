@@ -9,10 +9,6 @@ on:
       cosmosDbAccountName:
         description: "cosmosDbAccountName"
         required: true
-      environmentType:
-        required: true
-        description: "environmentType"
-        type: string      
       existingActionGroupName:
         required: true
         description: "existingActionGroupName"
@@ -58,7 +54,7 @@ jobs:
       uses: azure/arm-deploy@v2
       with:
         subscriptionId: '89a1afbb-99a3-4844-a9b3-55d84d47f784'
-        scope: subscription
+        scope: resourceGroup
         region: 'Global'
         template: alerting-cosmosdb.bicep
         parameters: ${{ steps.set-params.outputs.parameters }}
