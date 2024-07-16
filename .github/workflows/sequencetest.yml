@@ -67,7 +67,11 @@ jobs:
         azcliversion: 2.33.0
         inlinescript: 
               az login --service-principal --tenant $AZURE_TENANT_ID -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --output none
-
+              
+    - name: Set Azure CLI configuration permissions
+      run: sudo chown -R $USER ~/.azure
+      if: runner.os == 'Linux'
+        
     - name: Deploy Bicep file
       uses: azure/arm-deploy@v2
       with:
