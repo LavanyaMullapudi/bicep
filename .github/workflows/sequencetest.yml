@@ -2,40 +2,22 @@ name: Deploy Bicep
 on:
   workflow_dispatch:
     inputs:
-      location:
+      resourceGroupName:
         required: true
-        description: 'deployment location'
+        description: 'resourceGroupName'
         type: string
-      ApplicationInsightsName:
-        description: select the ApplicationInsightsName
+      cosmosDbAccountName:
+        description: "cosmosDbAccountName"
         required: true
-        #type: choice
-        # options:
-        #   - dev
-        #   - stg
-        #   - prd
       environmentType:
         required: true
         description: "environmentType"
         type: string      
-      emailinternal:
+      existingActionGroupName:
         required: true
-        description: "emailinternal"
+        description: "existingActionGroupName"
         type: string
-      appserviceName:
-        required: true
-        description: "appserviceName"
-       # type: choice
-        # options:
-        #   - sequence1
-        #   - sequence2
-        #   - sequence3
-        #   - sequence4
-        #   - sequence5
-      resourcegroupname:
-          required: true
-          description: "resourcegroupname"
-          type: string        
+       
 
  
 jobs:
@@ -49,7 +31,7 @@ jobs:
       id: set-params
       run: |
         echo "Setting parameters..."
-        parameters='{"location": "${{ inputs.location }}","ApplicationInsightsName": "${{ inputs.ApplicationInsightsName }}","environmentType": "${{ inputs.environmentType }}","emailinternal": "${{ inputs.emailinternal }}","appserviceName": "${{ inputs.appserviceName }}","resourcegroupname": "${{ inputs.resourcegroupname }}"}'
+        parameters='{"resourceGroupName": "${{ inputs.resourceGroupName }}","cosmosDbAccountName": "${{ inputs.cosmosDbAccountName }}","existingActionGroupName": "${{ inputs.existingActionGroupName }}"}'
         echo "::set-output name=parameters_json::$parameters"
       shell: bash
       
@@ -77,8 +59,8 @@ jobs:
       with:
         subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
         scope: subscription
-        region: ${{ github.event.inputs.location }}
-        template: alerting-webapp.bicep
+       # region: ${{ github.event.inputs.location }}
+        template: alerting-cosmosdb.bicep
         parameters: ${{ steps.set-params.outputs.parameters }}
         failOnStdErr: false
 
