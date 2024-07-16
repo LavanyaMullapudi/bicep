@@ -6,6 +6,7 @@ param ApplicationInsightsName string = 'test-webapp-appins'
 param environmentType string = 'qademo'
 param emailinternal string = 'lavanya.mullapudi@rhythmx.ai'
 param appserviceName string = 'test-webapp-test'
+param resourcegroupname string = 'app-acr-rg'
 
 var environmentConfigurationMap = {
   qademo: {
