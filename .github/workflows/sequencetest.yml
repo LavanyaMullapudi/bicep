@@ -6,55 +6,37 @@ on:
         required: true
         description: 'deployment location'
         type: string
-      environment:
+      ApplicationInsightsName:
         description: select the environment
         required: true
         type: choice
-        options:
-          - dev
-          - stg
-          - prd
-      createdbyemail:
+        # options:
+        #   - dev
+        #   - stg
+        #   - prd
+      environmentType:
         required: true
         description: "createdbyemail"
         type: string      
-      project:
+      emailinternal:
         required: true
         description: "project"
         type: string
-      sequence:
+      appserviceName:
         required: true
         description: "the deployment sequence that needs to be deployment"
         type: choice
-        options:
-          - sequence1
-          - sequence2
-          - sequence3
-          - sequence4
-          - sequence5
+        # options:
+        #   - sequence1
+        #   - sequence2
+        #   - sequence3
+        #   - sequence4
+        #   - sequence5
       resourcegroupname:
           required: true
           description: name of the resouce group in which the rx applications will be created
           type: string        
-      vnetname:
-        required: true
-        description: name of the existing vnet in which the rx applications will be added
-        type: string
-      postgresdbpassword:
-        required: false
-        description: password for the postgres db
-        type: string
-      vmimagereferencename:
-        required: false
-        description: name of the vm image reference
-        type: choice
-        options:
-          - ubuntu
-          - redhat
-      vmsshkey:
-        required: false
-        description: ssh key for the vm
-        type: string
+
  
 jobs:
   build-and-deploy:
@@ -66,37 +48,38 @@ jobs:
     - name: Set up parameters for each sequence
       id: set-params
       run: |
-        sequenceparam='{
-          "sequence1": {},
-          "sequence2": {"project": "${{ inputs.project }}", "staticwebapplocation": "centralus"},
-          "sequence3": {"project": "${{ inputs.project }}", "postgresdbpassword": "${{ inputs.postgresdbpassword }}"},
-          "sequence4": {"project": "${{ inputs.project }}", "vmimagereferencename": "${{ inputs.vmimagereferencename }}", "vmsshkey": "${{ inputs.vmsshkey }}"}
-          }'
-        commonparam='{"location": "${{ inputs.location }}", "environment": "${{ inputs.environment }}", "createdbyemail": "${{ inputs.createdbyemail }}", "vnetname": "${{ inputs.vnetname }}", "resourcegroupname": "${{ inputs.resourcegroupname }}"}'
+        $parameters='{"location": "${{ inputs.location }}","ApplicationInsightsName": "${{ inputs.ApplicationInsightsName }}","environmentType": "${{ inputs.environmentType }}","emailinternal": "${{ inputs.emailinternal }}","appserviceName": "${{ inputs.appserviceName }}","resourcegroupname": "${{ inputs.resourcegroupname }}"}'
+        # sequenceparam='{
+        #   "sequence1": {},
+        #   "sequence2": {"location": "${{ inputs.location }}", "ApplicationInsightsName": "centralus"},
+        #   "sequence3": {"location": "${{ inputs.location }}", "postgresdbpassword": "${{ inputs.postgresdbpassword }}"},
+        #   "sequence4": {"location": "${{ inputs.location }}", "vmimagereferencename": "${{ inputs.vmimagereferencename }}", "vmsshkey": "${{ inputs.vmsshkey }}"}
+        #   }'
+        # commonparam='{"location": "${{ inputs.location }}", "environment": "${{ inputs.environment }}", "createdbyemail": "${{ inputs.createdbyemail }}", "vnetname": "${{ inputs.vnetname }}", "resourcegroupname": "${{ inputs.resourcegroupname }}"}'
    
-        sequence="${{ inputs.sequence }}"
-        # Extract the specific sequence parameters
-        sequence_params=$(echo $sequenceparam | jq -r --arg seq "$sequence" '.[$seq]')
+        # sequence="${{ inputs.sequence }}"
+        # # Extract the specific sequence parameters
+        # sequence_params=$(echo $sequenceparam | jq -r --arg seq "$sequence" '.[$seq]')
         
-        echo "Sequence Parameters"
-        echo "$sequence_params"
+        # echo "Sequence Parameters"
+        # echo "$sequence_params"
        
-        echo "common Parameters"
-        echo "$commonparam"
+        # echo "common Parameters"
+        # echo "$commonparam"
 
-        # Combine the common parameters with the sequence-specific parameters
-        parameters=$(echo $commonparam | jq -r --argjson seq_params "$sequence_params" '. * $seq_params')
-        echo "Parameters for deployment:"
-        echo "$parameters" >> param.json
-        cat param.json
-        pwd
-        # Parse parameters to JSON format
-        echo "Parameters for json deployment:"
-        parameters_json=$(echo "$parameters" | jq -c .)
-        echo "$parameters_json" >> param1.json
-        echo "::set-output name=fileparameters_json::$(cat param1.json)"
-        echo "::set-output name=outparameters_json::'$parameters_json'"
-        echo "::set-output name=outparameters::$parameters"
+        # # Combine the common parameters with the sequence-specific parameters
+        # parameters=$(echo $commonparam | jq -r --argjson seq_params "$sequence_params" '. * $seq_params')
+        # echo "Parameters for deployment:"
+        # echo "$parameters" >> param.json
+        # cat param.json
+        # pwd
+        # # Parse parameters to JSON format
+        # echo "Parameters for json deployment:"
+        # parameters_json=$(echo "$parameters" | jq -c .)
+        # echo "$parameters_json" >> param1.json
+        # echo "::set-output name=fileparameters_json::$(cat param1.json)"
+        # echo "::set-output name=outparameters_json::'$parameters_json'"
+          echo "::set-output name=outparameters::$parameters"
       shell: bash
 
     - name: Checkout code
@@ -114,15 +97,15 @@ jobs:
         inlinescript: 
               az login --service-principal --tenant $AZURE_TENANT_ID -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --output none
 
-    # - name: Deploy Bicep file
-    #   uses: azure/arm-deploy@v2
-    #   with:
-    #     subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
-    #     scope: subscription
-    #     region: ${{ github.event.inputs.location }}
-    #     template: ./${{inputs.sequence}}/main.bicep
-    #     parameters: ${{ toJson(fromJson(steps.set-params.outputs.parameters_json)) }}
-    #     failOnStdErr: false
+    - name: Deploy Bicep file
+      uses: azure/arm-deploy@v2
+      with:
+        subscriptionId: ${{ secrets.PRESBYTERIAN_SUBSCRIPTION }}
+        scope: subscription
+        region: ${{ github.event.inputs.location }}
+        template: alerting-webapp.bicep
+        parameters: ${{ steps.set-params.outputs.parameters_json }}
+        failOnStdErr: false
 
              
  
