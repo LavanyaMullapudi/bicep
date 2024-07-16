@@ -1,4 +1,4 @@
-name: Deploy Bicep file in Presbyterian
+name: Deploy Bicep 
 on:
   workflow_dispatch:
     inputs:
@@ -45,43 +45,14 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-    - name: Set up parameters for each sequence
+    - name: Set up parameters
       id: set-params
       run: |
-        $parameters='{"location": "${{ inputs.location }}","ApplicationInsightsName": "${{ inputs.ApplicationInsightsName }}","environmentType": "${{ inputs.environmentType }}","emailinternal": "${{ inputs.emailinternal }}","appserviceName": "${{ inputs.appserviceName }}","resourcegroupname": "${{ inputs.resourcegroupname }}"}'
-        # sequenceparam='{
-        #   "sequence1": {},
-        #   "sequence2": {"location": "${{ inputs.location }}", "ApplicationInsightsName": "centralus"},
-        #   "sequence3": {"location": "${{ inputs.location }}", "postgresdbpassword": "${{ inputs.postgresdbpassword }}"},
-        #   "sequence4": {"location": "${{ inputs.location }}", "vmimagereferencename": "${{ inputs.vmimagereferencename }}", "vmsshkey": "${{ inputs.vmsshkey }}"}
-        #   }'
-        # commonparam='{"location": "${{ inputs.location }}", "environment": "${{ inputs.environment }}", "createdbyemail": "${{ inputs.createdbyemail }}", "vnetname": "${{ inputs.vnetname }}", "resourcegroupname": "${{ inputs.resourcegroupname }}"}'
-   
-        # sequence="${{ inputs.sequence }}"
-        # # Extract the specific sequence parameters
-        # sequence_params=$(echo $sequenceparam | jq -r --arg seq "$sequence" '.[$seq]')
-        
-        # echo "Sequence Parameters"
-        # echo "$sequence_params"
-       
-        # echo "common Parameters"
-        # echo "$commonparam"
-
-        # # Combine the common parameters with the sequence-specific parameters
-        # parameters=$(echo $commonparam | jq -r --argjson seq_params "$sequence_params" '. * $seq_params')
-        # echo "Parameters for deployment:"
-        # echo "$parameters" >> param.json
-        # cat param.json
-        # pwd
-        # # Parse parameters to JSON format
-        # echo "Parameters for json deployment:"
-        # parameters_json=$(echo "$parameters" | jq -c .)
-        # echo "$parameters_json" >> param1.json
-        # echo "::set-output name=fileparameters_json::$(cat param1.json)"
-        # echo "::set-output name=outparameters_json::'$parameters_json'"
-          echo "::set-output name=outparameters::$parameters"
+        echo "Setting parameters..."
+        parameters='{"location": "${{ inputs.location }}","ApplicationInsightsName": "${{ inputs.ApplicationInsightsName }}","environmentType": "${{ inputs.environmentType }}","emailinternal": "${{ inputs.emailinternal }}","appserviceName": "${{ inputs.appserviceName }}","resourcegroupname": "${{ inputs.resourcegroupname }}"}'
+        echo "::set-output name=parameters_json::$parameters"
       shell: bash
-
+      
     - name: Checkout code
       uses: actions/checkout@v3
 
@@ -104,7 +75,7 @@ jobs:
         scope: subscription
         region: ${{ github.event.inputs.location }}
         template: alerting-webapp.bicep
-        parameters: ${{ steps.set-params.outputs.parameters_json }}
+        parameters: ${{ steps.set-params.outputs.parameters }}
         failOnStdErr: false
 
              
