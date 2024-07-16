@@ -7,25 +7,25 @@ on:
         description: 'deployment location'
         type: string
       ApplicationInsightsName:
-        description: select the environment
+        description: select the ApplicationInsightsName
         required: true
-        type: choice
+        #type: choice
         # options:
         #   - dev
         #   - stg
         #   - prd
       environmentType:
         required: true
-        description: "createdbyemail"
+        description: "environmentType"
         type: string      
       emailinternal:
         required: true
-        description: "project"
+        description: "emailinternal"
         type: string
       appserviceName:
         required: true
-        description: "the deployment sequence that needs to be deployment"
-        type: choice
+        description: "appserviceName"
+       # type: choice
         # options:
         #   - sequence1
         #   - sequence2
@@ -34,7 +34,7 @@ on:
         #   - sequence5
       resourcegroupname:
           required: true
-          description: name of the resouce group in which the rx applications will be created
+          description: "resourcegroupname"
           type: string        
 
  
